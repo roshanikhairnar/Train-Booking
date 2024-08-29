@@ -1,0 +1,44 @@
+syntax = "proto3"; 
+
+package train_booking;
+option go_package = "trainbooking/trainbookingpb";
+import "google/api/annotations.proto";
+
+
+
+// model
+message TrainBooking {
+    string first_name = 1;
+    string last_name = 2;
+    string to_city =3;
+    string from_city=4;
+    int32 ticket_id =5;
+    int32 seat_no=6;
+    int32 amount=7;
+}
+
+// request
+message TrainBookingRequest {
+    TrainBooking booking = 1;
+}
+
+// response
+message TrainBookingResponse {
+    string first_name = 1;
+    string last_name = 2;
+    string to_city =3;
+    string from_city=4;
+    int32 ticket_id =5;
+    int32 seat_no=6;
+    int32 amount=7;
+}
+
+service TrainBookingService{
+    // unary
+    rpc Purchase(TrainBookingRequest) returns (TrainBookingResponse) {
+        option(google.api.http)={
+            post: "/v0/orders",
+            body: "*"
+        };
+    }
+}
