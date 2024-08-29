@@ -1,21 +1,30 @@
 package main
 
 import (
+	"context"
 	"log"
+	"net/http"
 
-	"github.com/Train-Booking/client"
 	trainbookingpb "github.com/Train-Booking/proto"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	mux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+
+	err := trainbookingpb.RegisterTrainTicketServiceHandlerFromEndpoint(ctx, mux, "localhost:50051", opts)
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalf("Error in registering the service:%v", err)
 	}
-	defer conn.Close()
 
-	c := trainbookingpb.NewTrainBookingServiceClient(conn)
-
-	client.DoPurchase(c)
+	err = http.ListenAndServe(":8080", mux)
+	if err != nil {
+		log.Fatalf("Error in listening the service:%v", err)
+	}
 }

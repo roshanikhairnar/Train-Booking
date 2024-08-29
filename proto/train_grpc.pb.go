@@ -19,105 +19,250 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TrainBookingService_Purchase_FullMethodName = "/train_booking.TrainBookingService/Purchase"
+	TrainTicketService_SubmitPurchase_FullMethodName    = "/train_booking.TrainTicketService/SubmitPurchase"
+	TrainTicketService_GetTicketDetails_FullMethodName  = "/train_booking.TrainTicketService/GetTicketDetails"
+	TrainTicketService_GetUsersBySection_FullMethodName = "/train_booking.TrainTicketService/GetUsersBySection"
+	TrainTicketService_RemoveUser_FullMethodName        = "/train_booking.TrainTicketService/RemoveUser"
+	TrainTicketService_ModifySeat_FullMethodName        = "/train_booking.TrainTicketService/ModifySeat"
 )
 
-// TrainBookingServiceClient is the client API for TrainBookingService service.
+// TrainTicketServiceClient is the client API for TrainTicketService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type TrainBookingServiceClient interface {
-	// unary
-	Purchase(ctx context.Context, in *TrainBookingRequest, opts ...grpc.CallOption) (*TrainBookingResponse, error)
+type TrainTicketServiceClient interface {
+	SubmitPurchase(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[PurchaseRequest, PurchaseResponse], error)
+	GetTicketDetails(ctx context.Context, in *GetTicketRequest, opts ...grpc.CallOption) (*GetTicketResponse, error)
+	GetUsersBySection(ctx context.Context, in *GetUsersBySectionRequest, opts ...grpc.CallOption) (*GetUsersBySectionResponse, error)
+	RemoveUser(ctx context.Context, in *RemoveUserRequest, opts ...grpc.CallOption) (*RemoveUserResponse, error)
+	ModifySeat(ctx context.Context, in *ModifySeatRequest, opts ...grpc.CallOption) (*ModifySeatResponse, error)
 }
 
-type trainBookingServiceClient struct {
+type trainTicketServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewTrainBookingServiceClient(cc grpc.ClientConnInterface) TrainBookingServiceClient {
-	return &trainBookingServiceClient{cc}
+func NewTrainTicketServiceClient(cc grpc.ClientConnInterface) TrainTicketServiceClient {
+	return &trainTicketServiceClient{cc}
 }
 
-func (c *trainBookingServiceClient) Purchase(ctx context.Context, in *TrainBookingRequest, opts ...grpc.CallOption) (*TrainBookingResponse, error) {
+func (c *trainTicketServiceClient) SubmitPurchase(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[PurchaseRequest, PurchaseResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(TrainBookingResponse)
-	err := c.cc.Invoke(ctx, TrainBookingService_Purchase_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &TrainTicketService_ServiceDesc.Streams[0], TrainTicketService_SubmitPurchase_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[PurchaseRequest, PurchaseResponse]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type TrainTicketService_SubmitPurchaseClient = grpc.BidiStreamingClient[PurchaseRequest, PurchaseResponse]
+
+func (c *trainTicketServiceClient) GetTicketDetails(ctx context.Context, in *GetTicketRequest, opts ...grpc.CallOption) (*GetTicketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTicketResponse)
+	err := c.cc.Invoke(ctx, TrainTicketService_GetTicketDetails_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// TrainBookingServiceServer is the server API for TrainBookingService service.
-// All implementations must embed UnimplementedTrainBookingServiceServer
-// for forward compatibility.
-type TrainBookingServiceServer interface {
-	// unary
-	Purchase(context.Context, *TrainBookingRequest) (*TrainBookingResponse, error)
-	mustEmbedUnimplementedTrainBookingServiceServer()
+func (c *trainTicketServiceClient) GetUsersBySection(ctx context.Context, in *GetUsersBySectionRequest, opts ...grpc.CallOption) (*GetUsersBySectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUsersBySectionResponse)
+	err := c.cc.Invoke(ctx, TrainTicketService_GetUsersBySection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
-// UnimplementedTrainBookingServiceServer must be embedded to have
+func (c *trainTicketServiceClient) RemoveUser(ctx context.Context, in *RemoveUserRequest, opts ...grpc.CallOption) (*RemoveUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveUserResponse)
+	err := c.cc.Invoke(ctx, TrainTicketService_RemoveUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trainTicketServiceClient) ModifySeat(ctx context.Context, in *ModifySeatRequest, opts ...grpc.CallOption) (*ModifySeatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ModifySeatResponse)
+	err := c.cc.Invoke(ctx, TrainTicketService_ModifySeat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// TrainTicketServiceServer is the server API for TrainTicketService service.
+// All implementations must embed UnimplementedTrainTicketServiceServer
+// for forward compatibility.
+type TrainTicketServiceServer interface {
+	SubmitPurchase(grpc.BidiStreamingServer[PurchaseRequest, PurchaseResponse]) error
+	GetTicketDetails(context.Context, *GetTicketRequest) (*GetTicketResponse, error)
+	GetUsersBySection(context.Context, *GetUsersBySectionRequest) (*GetUsersBySectionResponse, error)
+	RemoveUser(context.Context, *RemoveUserRequest) (*RemoveUserResponse, error)
+	ModifySeat(context.Context, *ModifySeatRequest) (*ModifySeatResponse, error)
+	mustEmbedUnimplementedTrainTicketServiceServer()
+}
+
+// UnimplementedTrainTicketServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedTrainBookingServiceServer struct{}
+type UnimplementedTrainTicketServiceServer struct{}
 
-func (UnimplementedTrainBookingServiceServer) Purchase(context.Context, *TrainBookingRequest) (*TrainBookingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Purchase not implemented")
+func (UnimplementedTrainTicketServiceServer) SubmitPurchase(grpc.BidiStreamingServer[PurchaseRequest, PurchaseResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method SubmitPurchase not implemented")
 }
-func (UnimplementedTrainBookingServiceServer) mustEmbedUnimplementedTrainBookingServiceServer() {}
-func (UnimplementedTrainBookingServiceServer) testEmbeddedByValue()                             {}
+func (UnimplementedTrainTicketServiceServer) GetTicketDetails(context.Context, *GetTicketRequest) (*GetTicketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTicketDetails not implemented")
+}
+func (UnimplementedTrainTicketServiceServer) GetUsersBySection(context.Context, *GetUsersBySectionRequest) (*GetUsersBySectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsersBySection not implemented")
+}
+func (UnimplementedTrainTicketServiceServer) RemoveUser(context.Context, *RemoveUserRequest) (*RemoveUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveUser not implemented")
+}
+func (UnimplementedTrainTicketServiceServer) ModifySeat(context.Context, *ModifySeatRequest) (*ModifySeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ModifySeat not implemented")
+}
+func (UnimplementedTrainTicketServiceServer) mustEmbedUnimplementedTrainTicketServiceServer() {}
+func (UnimplementedTrainTicketServiceServer) testEmbeddedByValue()                            {}
 
-// UnsafeTrainBookingServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to TrainBookingServiceServer will
+// UnsafeTrainTicketServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TrainTicketServiceServer will
 // result in compilation errors.
-type UnsafeTrainBookingServiceServer interface {
-	mustEmbedUnimplementedTrainBookingServiceServer()
+type UnsafeTrainTicketServiceServer interface {
+	mustEmbedUnimplementedTrainTicketServiceServer()
 }
 
-func RegisterTrainBookingServiceServer(s grpc.ServiceRegistrar, srv TrainBookingServiceServer) {
-	// If the following call pancis, it indicates UnimplementedTrainBookingServiceServer was
+func RegisterTrainTicketServiceServer(s grpc.ServiceRegistrar, srv TrainTicketServiceServer) {
+	// If the following call pancis, it indicates UnimplementedTrainTicketServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&TrainBookingService_ServiceDesc, srv)
+	s.RegisterService(&TrainTicketService_ServiceDesc, srv)
 }
 
-func _TrainBookingService_Purchase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TrainBookingRequest)
+func _TrainTicketService_SubmitPurchase_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TrainTicketServiceServer).SubmitPurchase(&grpc.GenericServerStream[PurchaseRequest, PurchaseResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type TrainTicketService_SubmitPurchaseServer = grpc.BidiStreamingServer[PurchaseRequest, PurchaseResponse]
+
+func _TrainTicketService_GetTicketDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTicketRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TrainBookingServiceServer).Purchase(ctx, in)
+		return srv.(TrainTicketServiceServer).GetTicketDetails(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: TrainBookingService_Purchase_FullMethodName,
+		FullMethod: TrainTicketService_GetTicketDetails_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TrainBookingServiceServer).Purchase(ctx, req.(*TrainBookingRequest))
+		return srv.(TrainTicketServiceServer).GetTicketDetails(ctx, req.(*GetTicketRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// TrainBookingService_ServiceDesc is the grpc.ServiceDesc for TrainBookingService service.
+func _TrainTicketService_GetUsersBySection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsersBySectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrainTicketServiceServer).GetUsersBySection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrainTicketService_GetUsersBySection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrainTicketServiceServer).GetUsersBySection(ctx, req.(*GetUsersBySectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrainTicketService_RemoveUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrainTicketServiceServer).RemoveUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrainTicketService_RemoveUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrainTicketServiceServer).RemoveUser(ctx, req.(*RemoveUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrainTicketService_ModifySeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ModifySeatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrainTicketServiceServer).ModifySeat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrainTicketService_ModifySeat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrainTicketServiceServer).ModifySeat(ctx, req.(*ModifySeatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// TrainTicketService_ServiceDesc is the grpc.ServiceDesc for TrainTicketService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var TrainBookingService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "train_booking.TrainBookingService",
-	HandlerType: (*TrainBookingServiceServer)(nil),
+var TrainTicketService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "train_booking.TrainTicketService",
+	HandlerType: (*TrainTicketServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Purchase",
-			Handler:    _TrainBookingService_Purchase_Handler,
+			MethodName: "GetTicketDetails",
+			Handler:    _TrainTicketService_GetTicketDetails_Handler,
+		},
+		{
+			MethodName: "GetUsersBySection",
+			Handler:    _TrainTicketService_GetUsersBySection_Handler,
+		},
+		{
+			MethodName: "RemoveUser",
+			Handler:    _TrainTicketService_RemoveUser_Handler,
+		},
+		{
+			MethodName: "ModifySeat",
+			Handler:    _TrainTicketService_ModifySeat_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "SubmitPurchase",
+			Handler:       _TrainTicketService_SubmitPurchase_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "train.proto",
 }
