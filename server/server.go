@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"io"
 	"sync"
 
 	trainbookingpb "github.com/Train-Booking/proto"
@@ -20,12 +21,22 @@ type Server struct {
 func (s *Server) SubmitPurchase(ticketStream trainbookingpb.TrainTicketService_SubmitPurchaseServer) error {
 	for {
 		req, err := ticketStream.Recv()
+		if err == io.EOF {
+			return nil
+		}
 		if err != nil {
 			return err
+		}
+		if s.SeatCount > 40 {
+			return fmt.Errorf("no seats available")
 		}
 		s.Mu.Lock()
 		seat := fmt.Sprintf("%d", s.SeatCount+1)
 		s.SeatCount++
+		section := "A"
+		if s.SeatCount > 20 { //Assumed condn seats are 40
+			section = "B"
+		}
 
 		bookingReceipt := &trainbookingpb.PurchaseResponse{
 			TicketId:   fmt.Sprintf("TNO%d", rand.Intn(10000)),
@@ -34,7 +45,7 @@ func (s *Server) SubmitPurchase(ticketStream trainbookingpb.TrainTicketService_S
 			User:       req.GetUser(),
 			Price:      20.0,
 			SeatNumber: seat,
-			Section:    "A",
+			Section:    section,
 		}
 
 		s.BookingMap[req.GetUser().GetId()] = bookingReceipt
@@ -55,7 +66,7 @@ func (s *Server) GetTicketDetails(ctx context.Context, req *trainbookingpb.GetTi
 	defer s.Mu.Unlock()
 	ticket, ok := s.BookingMap[req.UserId]
 	if !ok {
-		return nil, fmt.Errorf("ticket not found for the userID %v", req.UserId)
+		return nil, fmt.Errorf("ticket not found for the userID,user has not booked ticket %v", req.UserId)
 	}
 	resp := trainbookingpb.GetTicketResponse{
 		TicketId: ticket.TicketId,
@@ -96,7 +107,11 @@ func (s *Server) GetUsersBySection(ctx context.Context, req *trainbookingpb.GetU
 func (s *Server) RemoveUser(ctx context.Context, req *trainbookingpb.RemoveUserRequest) (*trainbookingpb.RemoveUserResponse, error) {
 	s.Mu.Lock()
 	defer s.Mu.Unlock()
-
+	if _, ok := s.BookingMap[req.UserId]; !ok {
+		return &trainbookingpb.RemoveUserResponse{
+			Success: false,
+		}, fmt.Errorf("no user found with id %v", req.UserId)
+	}
 	delete(s.BookingMap, req.UserId)
 
 	delete(s.Users, req.UserId)
@@ -112,12 +127,19 @@ func (s *Server) ModifySeat(ctx context.Context, req *trainbookingpb.ModifySeatR
 		if req.NewSeatNumber == val.SeatNumber && req.UserId != val.User.Id {
 			return &trainbookingpb.ModifySeatResponse{
 				Success: false,
-			}, nil
+			}, fmt.Errorf("seat is already taken by other user")
 		}
 	}
-	s.BookingMap[req.UserId].SeatNumber = req.NewSeatNumber
-	s.Users[req.UserId].SeatNumber = req.NewSeatNumber
+	if _, ok := s.BookingMap[req.UserId]; ok {
+		s.BookingMap[req.UserId].SeatNumber = req.NewSeatNumber
+		s.Users[req.UserId].SeatNumber = req.NewSeatNumber
+		return &trainbookingpb.ModifySeatResponse{
+			Success: true,
+		}, nil
+	}
+
 	return &trainbookingpb.ModifySeatResponse{
-		Success: true,
+		Success: false,
 	}, nil
+
 }
