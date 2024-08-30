@@ -57,12 +57,12 @@ Go to the project directory
 
 ## Run Program Locally
 
-Open Terminal and Run
+Open Terminal and run server
 ``` bash
 go run server/cmd/main.go
 ```
 
-Open another Terminal
+Open another Terminal and run client
 ```bash
 go run client/cmd/main.go
 ```
@@ -89,7 +89,7 @@ curl --location 'http://localhost:8080/v1/Purchase' \
 ```
 curl --location 'http://localhost:8080/v1/ticket/user-197'
 ```
-### 5. ModifySeat
+### 3. ModifySeat
 
 - **Endpoint**: `/v1/user/{userId}/seat`
 - **Method**: `PUT`
@@ -101,7 +101,7 @@ curl --location --request PUT 'http://localhost:8080/v1/user/user-197/seat' \
     "newSeatNumber": "1"
 }'
 ```
-### 3. GetUsersBySection
+### 4. GetUsersBySection
 
 - **Endpoint**: `/v1/users/section/{section}`
 - **Method**: `GET`
@@ -109,7 +109,7 @@ curl --location --request PUT 'http://localhost:8080/v1/user/user-197/seat' \
 curl --location 'http://localhost:8080/v1/users/section/A'
 ```
 
-### 4. RemoveUser
+### 5. RemoveUser
 
 - **Endpoint**: `/v1/user/{userId}`
 - **Method**: `DELETE`
