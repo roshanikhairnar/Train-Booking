@@ -1,8 +1,49 @@
 # Train-Booking
+This is a gRPC API implementation in Golang for a train ticket booking system, allowing users to book tickets, view ticket details, manage users, and modify seat allocations.
+
+## Prerequisites
+
+Before setting up and running the project, ensure you have the following prerequisites installed on your system:
+
+### 1. Golang
+
+- **Version**: Go 1.18 or later is recommended.
+- **Installation**:
+  - For macOS: `brew install go`
+  - For Windows: Download and install from [Go official website](https://golang.org/dl/)
+  - For Linux: Install using package manager (e.g., `sudo apt-get install golang`)
+
+### 2. Protocol Buffers (protoc)
+
+- **Version**: Protocol Buffers v3.14.0 or later is required.
+- **Installation**:
+  - macOS: `brew install protobuf`
+  - Windows/Linux: Download the precompiled binaries from [Protocol Buffers releases](https://github.com/protocolbuffers/protobuf/releases)
+  
+### 3. gRPC for Go
+
+- **Installation**:
+  - Run `go get google.golang.org/grpc` to install the gRPC package.
+  - Additionally, install the Protobuf plugin for Go using:
+    ```bash
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+    ```
+  - Ensure the `protoc-gen-go` and `protoc-gen-go-grpc` binaries are available in your `PATH`.
+
+### 4. gRPC-Gateway (Optional)
+
+- If you plan to expose your gRPC services as RESTful APIs using gRPC-Gateway:
+  - Install the gRPC-Gateway package using:
+    ```bash
+    go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+    go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+    ```
+  - Ensure the `protoc-gen-grpc-gateway` and `protoc-gen-openapiv2` binaries are available in your `PATH`.
 
 
 
-Clone the project
+## Clone the project
 
 ```bash
   git clone https://github.com/roshanikhairnar/Train-Booking.git
