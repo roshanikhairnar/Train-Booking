@@ -31,7 +31,7 @@ Before setting up and running the project, ensure you have the following prerequ
     ```
   - Ensure the `protoc-gen-go` and `protoc-gen-go-grpc` binaries are available in your `PATH`.
 
-### 4. gRPC-Gateway (Optional)
+### 4. gRPC-Gateway 
 
 - If you plan to expose your gRPC services as RESTful APIs using gRPC-Gateway:
   - Install the gRPC-Gateway package using:
