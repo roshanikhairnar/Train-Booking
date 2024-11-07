@@ -23,7 +23,7 @@ func main() {
 		log.Fatalf("Error in registering the service:%v", err)
 	}
 
-	err = http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":8010", mux)
 	if err != nil {
 		log.Fatalf("Error in listening the service:%v", err)
 	}
